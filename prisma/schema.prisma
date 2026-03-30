@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  password String
+  role     String @default("admin")
+  createdAt DateTime @default(now())
+}
+
+model Article {
+  id             String   @id @default(cuid())
+  title          String
+  subtitle       String?
+  slug           String   @unique
+  content        String
+  imageUrl       String?
+  imageCaption   String?
+  editoria       String   @default("noticias") // noticias, avaliacoes, colunas, videos
+  category       String?  // tag/topic within editoria
+  status         String   @default("draft") // draft, pending_review, published
+  source         String?
+  sourceUrl      String?
+  isAutoFetched  Boolean  @default(false)
+  isFeatured     Boolean  @default(false)
+  authorName     String?  @default("Redação Auto Repórter")
+  metaTitle      String?
+  metaDescription String?
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Car {
+  id             String  @id @default(cuid())
+  brand          String
+  model          String
+  year           Int
+  category       String  // hatch, sedan, suv_compacto, suv_medio, suv_grande, pickup_compacta, pickup_media, hibrido, eletrico
+  acabamento     Float   @default(0)
+  infotenimento  Float   @default(0)
+  espacoInterno  Float   @default(0)
+  portaMalas     Float   @default(0)
+  desempenho     Float   @default(0)
+  dirigibilidade Float   @default(0)
+  conforto       Float   @default(0)
+  consumo        Float   @default(0)
+  overallScore   Float   @default(0)
+  imageUrl       String?
+  reviewSlug     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  youtubeUrl  String
+  thumbnailUrl String?
+  publishedAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
+}
+
+model Column {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String?
+  slug        String   @unique
+  content     String
+  authorName  String
+  authorBio   String?
+  authorPhoto String?
+  imageUrl    String?
+  status      String   @default("draft")
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
