@@ -11,7 +11,7 @@ export const authConfig = {
       const isOnLoginPage = nextUrl.pathname === '/admin/login'
 
       if (isOnAdmin) {
-        if (isOnLoginPage) return true
+        if (isOnLoginPage || nextUrl.pathname.startsWith('/admin/esqueci-senha') || nextUrl.pathname.startsWith('/admin/redefinir-senha')) return true
         if (isLoggedIn) return true
         return false // Redireciona para a página de login
       }
