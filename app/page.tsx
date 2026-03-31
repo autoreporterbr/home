@@ -6,6 +6,7 @@ import NewsCard from '@/components/NewsCard'
 import Link from 'next/link'
 
 export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 async function getData() {
   try {

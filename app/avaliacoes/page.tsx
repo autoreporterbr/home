@@ -8,11 +8,18 @@ export const metadata = {
   description: 'Testes completos e imparciais dos principais modelos do mercado brasileiro.',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function AvaliacoesPage() {
-  const articles = await prisma.article.findMany({
-    where: { status: 'published', editoria: 'avaliacoes' },
-    orderBy: { publishedAt: 'desc' },
-  })
+  let articles: any[] = []
+  try {
+    articles = await prisma.article.findMany({
+      where: { status: 'published', editoria: 'avaliacoes' },
+      orderBy: { publishedAt: 'desc' },
+    })
+  } catch (error) {
+    console.error('Erro ao buscar avaliações:', error)
+  }
 
   return (
     <div>
