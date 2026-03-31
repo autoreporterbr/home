@@ -8,11 +8,18 @@ export const metadata = {
   description: 'Fique por dentro das últimas novidades do setor automotivo, lançamentos e segredos.',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function NoticiasPage() {
-  const articles = await prisma.article.findMany({
-    where: { status: 'published', editoria: 'noticias' },
-    orderBy: { publishedAt: 'desc' },
-  })
+  let articles: any[] = []
+  try {
+    articles = await prisma.article.findMany({
+      where: { status: 'published', editoria: 'noticias' },
+      orderBy: { publishedAt: 'desc' },
+    })
+  } catch (error) {
+    console.error('Erro ao buscar notícias:', error)
+  }
 
   return (
     <div>

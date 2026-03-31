@@ -3,11 +3,18 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import NewsCard from '@/components/NewsCard'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ColunasPage() {
-  const colunas = await prisma.article.findMany({
-    where: { editoria: 'colunas', status: 'published' },
-    orderBy: { publishedAt: 'desc' }
-  })
+  let colunas: any[] = []
+  try {
+    colunas = await prisma.article.findMany({
+      where: { editoria: 'colunas', status: 'published' },
+      orderBy: { publishedAt: 'desc' }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar colunas:', error)
+  }
 
   return (
     <div>

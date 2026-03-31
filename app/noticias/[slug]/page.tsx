@@ -4,26 +4,37 @@ import Footer from '@/components/Footer'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const article = await prisma.article.findUnique({ where: { slug } })
-  if (!article) return {}
-  return {
-    title: article.title,
-    description: article.subtitle || article.metaDescription,
-    openGraph: {
+  try {
+    const article = await prisma.article.findUnique({ where: { slug } })
+    if (!article) return {}
+    return {
       title: article.title,
       description: article.subtitle || article.metaDescription,
-      images: [article.imageUrl || '/og-image.jpg'],
-    },
+      openGraph: {
+        title: article.title,
+        description: article.subtitle || article.metaDescription,
+        images: [article.imageUrl || '/og-image.jpg'],
+      },
+    }
+  } catch {
+    return { title: 'Auto Repórter' }
   }
 }
 
 export default async function ArticleSinglePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const article = await prisma.article.findUnique({
-    where: { slug }
-  })
+  let article = null
+  try {
+    article = await prisma.article.findUnique({
+      where: { slug }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar artigo:', error)
+  }
 
   if (!article || article.status !== 'published') notFound()
 

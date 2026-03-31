@@ -7,10 +7,17 @@ export const metadata = {
   description: 'Confira os últimos lançamentos e testes em vídeo do Auto Repórter.',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function VideosPage() {
-  const videos = await prisma.video.findMany({
-    orderBy: { publishedAt: 'desc' },
-  })
+  let videos: any[] = []
+  try {
+    videos = await prisma.video.findMany({
+      orderBy: { publishedAt: 'desc' },
+    })
+  } catch (error) {
+    console.error('Erro ao buscar vídeos:', error)
+  }
 
   return (
     <div>

@@ -16,16 +16,24 @@ const CATEGORIES = [
   { value: 'eletrico', label: 'Elétricos' },
 ]
 
-export default async function RankingPublicPage({ searchParams }: { searchParams: { cat?: string } }) {
-  const selectedCat = searchParams.cat || 'all'
+export const dynamic = 'force-dynamic'
+
+export default async function RankingPublicPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
+  const { cat } = await searchParams
+  const selectedCat = cat || 'all'
   
   const where: any = {}
   if (selectedCat !== 'all') where.category = selectedCat
 
-  const cars = await prisma.car.findMany({
-    where,
-    orderBy: { overallScore: 'desc' },
-  })
+  let cars: any[] = []
+  try {
+    cars = await prisma.car.findMany({
+      where,
+      orderBy: { overallScore: 'desc' },
+    })
+  } catch (error) {
+    console.error('Erro ao buscar carros para o ranking:', error)
+  }
 
   return (
     <div>
