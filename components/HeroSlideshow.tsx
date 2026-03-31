@@ -86,11 +86,11 @@ export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
       {displaySlides.map((slide, index) => (
         <div
           key={slide.id}
-          className="hero-slide"
+          className={`hero-slide ${index === current ? 'active' : ''}`}
           style={{ 
             opacity: index === current ? 1 : 0,
             zIndex: index === current ? 1 : 0,
-            transition: 'opacity 0.8s ease',
+            transition: 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
           aria-hidden={index !== current}
         >

@@ -80,7 +80,7 @@ export default async function HomePage() {
 
         {/* Avaliações em destaque */}
         {(avaliacoes.length > 0 || true) && (
-          <section style={{ background: '#f9f9f9', padding: '3rem 0' }}>
+          <section style={{ background: 'var(--white)', padding: '4rem 0', borderTop: '1px solid rgba(0,0,0,0.05)', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1.5rem' }}>
               <div className="section-header">
                 <div className="section-header-bar" />

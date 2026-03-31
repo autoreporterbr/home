@@ -2,22 +2,32 @@
 
 :root {
   --yellow: #FFCB08;
-  --black: #000000;
+  --yellow-hover: #e6b707;
+  --black: #121214; /* Cinza Carvão Profundo */
+  --black-light: #202024;
   --white: #FFFFFF;
-  --gray-light: #f5f5f5;
+  --bg-body: #f8f9fa; /* Fundo claro para o corpo */
+  --gray-light: #f0f0f5;
   --gray-mid: #e0e0e0;
   --gray-dark: #333333;
   --font-inter: 'Inter', sans-serif;
 }
 
+
 /* Automotive background texture */
+body {
+  background-color: var(--bg-body);
+  color: var(--black);
+}
+
 .auto-bg-texture {
-  background-color: #ffffff;
+  background-color: var(--bg-body);
   background-image: 
-    radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);
+    radial-gradient(circle at 1px 1px, rgba(0,0,0,0.03) 1px, transparent 0);
   background-size: 24px 24px;
   min-height: 100vh;
 }
+
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
@@ -75,11 +85,14 @@
 
 /* ===== HEADER ===== */
 .site-header {
-  background: var(--black);
+  background: rgba(18, 18, 20, 0.85); /* Translúcido Escuro */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Linha divisória fina */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .site-logo img { height: 50px; width: auto; }
@@ -127,17 +140,21 @@
 .hero-slide {
   position: absolute;
   inset: 0;
-  transition: opacity 0.8s ease;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1); /* Transição mais dramática */
 }
 .hero-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 6s ease-out; /* Efeito Ken Burns sutil */
+}
+.hero-slide.active img {
+  transform: scale(1.05);
 }
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+  background: linear-gradient(to top, rgba(18, 18, 20, 0.95) 0%, rgba(18, 18, 20, 0.4) 40%, rgba(18, 18, 20, 0.1) 100%);
 }
 .hero-content {
   position: absolute;
@@ -160,10 +177,12 @@
 }
 .hero-title {
   color: white;
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 900;
-  line-height: 1.2;
-  margin-bottom: 0.5rem;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  letter-spacing: -0.02em;
 }
 .hero-subtitle {
   color: rgba(255,255,255,0.8);
@@ -171,6 +190,7 @@
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -178,16 +198,19 @@
 /* ===== NEWS CARDS ===== */
 .news-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .news-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-  border-bottom: 3px solid var(--yellow);
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 .news-card-img {
   width: 100%;
@@ -212,6 +235,7 @@
   margin-bottom: 0.5rem;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -244,11 +268,13 @@
 /* ===== RANKING TABLE ===== */
 .ranking-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 .ranking-table th {
   background: var(--black);
