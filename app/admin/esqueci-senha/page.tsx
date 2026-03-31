@@ -1,36 +1,37 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setMessage('')
 
     try {
-      const res = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       })
 
-      if (res?.error) {
-        setError('Email ou senha inválidos.')
+      const data = await res.json()
+
+      if (res.ok) {
+        setMessage(data.message)
+        setEmail('')
       } else {
-        router.push('/admin')
+        setError(data.error || 'Ocorreu um erro ao processar sua solicitação.')
       }
     } catch (err) {
-      setError('Ocorreu um erro ao fazer login.')
+      setError('Ocorreu um erro de rede. Tente novamente mais tarde.')
     } finally {
       setLoading(false)
     }
@@ -44,7 +45,7 @@ export default function LoginPage() {
             AUTO<span className="text-yellow-500">REPÓRTER</span>
           </h1>
           <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">
-            Acesso Administrativo
+            Recuperação de Senha
           </p>
         </div>
 
@@ -54,9 +55,15 @@ export default function LoginPage() {
           </div>
         )}
 
+        {message && (
+          <div className="bg-green-50 text-green-600 p-3 rounded-md text-sm mb-6 border border-green-100">
+            {message}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="form-label">Email</label>
+            <label className="form-label">Email cadastrado</label>
             <input
               type="email"
               value={email}
@@ -67,39 +74,23 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
-            <label className="form-label">Senha</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-input"
-              required
-              placeholder="••••••••"
-            />
-          </div>
-
           <button
             type="submit"
             disabled={loading}
             className="w-full btn-primary justify-center py-3 text-base"
           >
-            {loading ? 'Carregando...' : 'Entrar no Painel'}
+            {loading ? 'Enviando...' : 'Receber link de acesso'}
           </button>
-
+          
           <div className="text-center mt-4">
             <Link 
-              href="/admin/esqueci-senha" 
-              className="text-sm text-yellow-500 hover:text-yellow-400 font-medium"
+              href="/admin/login" 
+              className="text-sm text-gray-500 hover:text-black font-medium transition-colors"
             >
-              Esqueci minha senha
+              Voltar para o login
             </Link>
           </div>
         </form>
-
-        <p className="text-center mt-8 text-xs text-gray-400">
-          Auto Repórter — Portal de Notícias Automotivas
-        </p>
       </div>
     </div>
   )
