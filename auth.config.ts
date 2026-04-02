@@ -5,7 +5,8 @@ export const authConfig = {
     signIn: '/admin/login',
   },
   trustHost: true,
-  secret: process.env.AUTH_SECRET,
+  // O secret deve ser carregado obrigatoriamente
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   callbacks: {
     authorized({ auth, request: { nextUrl } }: any) {
       const isLoggedIn = !!auth?.user
@@ -13,7 +14,7 @@ export const authConfig = {
       const isOnLoginPage = nextUrl.pathname === '/admin/login'
 
       if (isOnAdmin) {
-        // Redirecionamento correto para páginas públicas sob /admin
+        // Permitir páginas públicas dentro do /admin
         if (isOnLoginPage || 
             nextUrl.pathname.startsWith('/admin/esqueci-senha') || 
             nextUrl.pathname.startsWith('/admin/redefinir-senha')) {
@@ -21,10 +22,10 @@ export const authConfig = {
         }
         
         if (isLoggedIn) return true
-        return false // Redireciona para login
+        return false // Redireciona para login se não estiver logado
       }
       return true
     },
   },
-  providers: [], // Providers configurados no auth.ts (Node.js runtime)
+  providers: [], // Configurado no auth.ts para o runtime do servidor
 } as NextAuthConfig
