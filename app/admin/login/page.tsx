@@ -71,15 +71,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label htmlFor="login-password" className="form-label" style={{ marginBottom: 0 }}>Senha</label>
-              <Link
-                href="/admin/esqueci-senha"
-                className="text-xs text-yellow-500 hover:text-yellow-600 font-semibold transition-colors"
-              >
-                Esqueci minha senha
-              </Link>
-            </div>
+            <label htmlFor="login-password" className="form-label">Senha</label>
             <input
               id="login-password"
               type="password"
@@ -90,6 +82,14 @@ export default function LoginPage() {
               placeholder="••••••••"
               autoComplete="current-password"
             />
+            <div className="flex justify-end mt-1">
+              <Link
+                href="/admin/esqueci-senha"
+                className="text-xs text-yellow-500 hover:text-yellow-600 font-semibold transition-colors"
+              >
+                Esqueci minha senha
+              </Link>
+            </div>
           </div>
 
           <button
