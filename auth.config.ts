@@ -4,6 +4,8 @@ export const authConfig = {
   pages: {
     signIn: '/admin/login',
   },
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
   callbacks: {
     authorized({ auth, request: { nextUrl } }: any) {
       const isLoggedIn = !!auth?.user
@@ -11,12 +13,18 @@ export const authConfig = {
       const isOnLoginPage = nextUrl.pathname === '/admin/login'
 
       if (isOnAdmin) {
-        if (isOnLoginPage || nextUrl.pathname.startsWith('/admin/esqueci-senha') || nextUrl.pathname.startsWith('/admin/redefinir-senha')) return true
+        // Redirecionamento correto para páginas públicas sob /admin
+        if (isOnLoginPage || 
+            nextUrl.pathname.startsWith('/admin/esqueci-senha') || 
+            nextUrl.pathname.startsWith('/admin/redefinir-senha')) {
+          return true
+        }
+        
         if (isLoggedIn) return true
-        return false // Redireciona para a página de login
+        return false // Redireciona para login
       }
       return true
     },
   },
-  providers: [], // Estrutura básica para o middleware
+  providers: [], // Providers configurados no auth.ts (Node.js runtime)
 } as NextAuthConfig
