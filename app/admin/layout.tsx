@@ -1,33 +1,25 @@
 import { auth } from '@/auth'
 import Link from 'next/link'
-import { headers } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
-
-// Páginas públicas que não devem ter sidebar nem wrapper
-const PUBLIC_PATHS = ['/admin/login', '/admin/esqueci-senha', '/admin/redefinir-senha']
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const headersList = await headers()
-  const pathname = headersList.get('x-next-url') || headersList.get('x-invoke-path') || ''
-  
-  // Verificar se é uma página pública baseado no pathname ou tentar a sessão
-  let session = null
+  let isAuthenticated = false
+
   try {
-    session = await auth()
+    const session = await auth()
+    isAuthenticated = !!(session?.user?.email)
   } catch (e) {
-    // Se auth() falhar (ex: sem AUTH_SECRET configurado), tratar como não logado
-    console.error('Auth error in layout:', e)
+    // Auth pode falhar se AUTH_SECRET não estiver configurado
+    isAuthenticated = false
   }
 
-  // Para páginas públicas, renderizar sem sidebar
-  const isPublicPage = PUBLIC_PATHS.some(p => pathname.startsWith(p))
-  
-  if (isPublicPage || !session) {
+  // Se não autenticado, renderizar apenas o conteúdo (login, esqueci-senha, etc.)
+  if (!isAuthenticated) {
     return <>{children}</>
   }
 
