@@ -102,7 +102,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center mt-8 text-xs text-gray-400">
-          Auto Repórter — Portal de Notícias Automotivas [v2.0-restructured]
+          Auto Repórter — Portal de Notícias Automotivas [v3.2-stable]
         </p>
       </div>
     </div>

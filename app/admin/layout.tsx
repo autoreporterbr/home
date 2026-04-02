@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,19 +9,25 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  let isAuthenticated = false
+  const headersList = await headers()
+  // No Vercel, o 'x-invoke-path' ou 'x-next-url' podem ajudar a identificar a rota real
+  const pathname = headersList.get('x-invoke-path') || headersList.get('x-next-url') || ''
+  
+  // Public routes check - extra safety against sidebar leaks
+  const isAuthPage = pathname.includes('/login') || 
+                    pathname.includes('/esqueci-senha') || 
+                    pathname.includes('/redefinir-senha')
 
+  let session = null
   try {
-    const session = await auth()
-    isAuthenticated = !!(session?.user?.email)
+    session = await auth()
   } catch (e) {
-    // Auth pode falhar se AUTH_SECRET não estiver configurado
-    isAuthenticated = false
+    session = null
   }
 
-  // Se não autenticado, renderizar apenas o conteúdo (login, esqueci-senha, etc.)
-  if (!isAuthenticated) {
-    return <>{children}</>
+  // Se não estiver autenticado OU for uma das páginas de auth, renderiza SEM sidebar
+  if (!session?.user?.email || isAuthPage) {
+    return <div className="min-h-screen bg-black">{children}</div>
   }
 
   return (
