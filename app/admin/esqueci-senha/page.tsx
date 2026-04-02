@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
       const res = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
       })
 
       const data = await res.json()
@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
         setError(data.error || 'Ocorreu um erro ao processar sua solicitação.')
       }
     } catch (err) {
-      setError('Ocorreu um erro de rede. Tente novamente mais tarde.')
+      setError('Erro de conexão. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -49,6 +49,10 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
+        <p className="text-sm text-gray-500 mb-6 text-center">
+          Informe seu e-mail cadastrado e enviaremos um link para redefinir sua senha.
+        </p>
+
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-6 border border-red-100">
             {error}
@@ -61,16 +65,18 @@ export default function ForgotPasswordPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="form-label">Email cadastrado</label>
+            <label htmlFor="recovery-email" className="form-label">Email cadastrado</label>
             <input
+              id="recovery-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
               required
               placeholder="seu@email.com.br"
+              autoComplete="email"
             />
           </div>
 
@@ -79,15 +85,15 @@ export default function ForgotPasswordPage() {
             disabled={loading}
             className="w-full btn-primary justify-center py-3 text-base"
           >
-            {loading ? 'Enviando...' : 'Receber link de acesso'}
+            {loading ? 'Enviando...' : 'Enviar link de recuperação'}
           </button>
-          
+
           <div className="text-center mt-4">
-            <Link 
-              href="/admin/login" 
+            <Link
+              href="/admin/login"
               className="text-sm text-gray-500 hover:text-black font-medium transition-colors"
             >
-              Voltar para o login
+              ← Voltar para o login
             </Link>
           </div>
         </form>

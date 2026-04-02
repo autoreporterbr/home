@@ -2,6 +2,50 @@
 
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+
+function PasswordStrengthIndicator({ password }: { password: string }) {
+  const checks = [
+    { label: 'Mínimo 8 caracteres', valid: password.length >= 8 },
+    { label: 'Letra maiúscula', valid: /[A-Z]/.test(password) },
+    { label: 'Letra minúscula', valid: /[a-z]/.test(password) },
+    { label: 'Número', valid: /[0-9]/.test(password) },
+  ]
+
+  const passedCount = checks.filter(c => c.valid).length
+  const strengthPercent = (passedCount / checks.length) * 100
+
+  if (!password) return null
+
+  return (
+    <div className="mt-3 space-y-2">
+      <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-300"
+          style={{
+            width: `${strengthPercent}%`,
+            backgroundColor:
+              strengthPercent <= 25 ? '#ef4444' :
+              strengthPercent <= 50 ? '#f97316' :
+              strengthPercent <= 75 ? '#eab308' : '#22c55e',
+          }}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-1">
+        {checks.map((check) => (
+          <div
+            key={check.label}
+            className="flex items-center gap-1.5 text-xs"
+            style={{ color: check.valid ? '#22c55e' : '#9ca3af' }}
+          >
+            <span>{check.valid ? '✓' : '○'}</span>
+            <span>{check.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function ResetPasswordForm() {
   const [password, setPassword] = useState('')
@@ -9,10 +53,16 @@ function ResetPasswordForm() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const token = searchParams.get('token')
+
+  const isPasswordValid =
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,8 +76,14 @@ function ResetPasswordForm() {
       return
     }
 
+    if (!isPasswordValid) {
+      setError('A senha não atende aos requisitos mínimos de segurança.')
+      setLoading(false)
+      return
+    }
+
     if (!token) {
-      setError('Token de recuperação inválido ou ausente da URL.')
+      setError('Token de recuperação inválido ou ausente.')
       setLoading(false)
       return
     }
@@ -45,12 +101,12 @@ function ResetPasswordForm() {
         setMessage('Senha alterada com sucesso! Redirecionando para login...')
         setTimeout(() => {
           router.push('/admin/login')
-        }, 3000)
+        }, 2500)
       } else {
         setError(data.error || 'Ocorreu um erro ao redefinir sua senha.')
       }
     } catch (err) {
-      setError('Ocorreu um erro de rede. Tente novamente mais tarde.')
+      setError('Erro de conexão. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -70,7 +126,7 @@ function ResetPasswordForm() {
 
         {!token && (
           <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-6 border border-red-100 font-bold">
-            Atenção: Nenhum token de recuperação encontrado na URL. Você deve clicar no link enviado por e-mail.
+            Nenhum token de recuperação encontrado. Use o link enviado por e-mail.
           </div>
         )}
 
@@ -86,40 +142,57 @@ function ResetPasswordForm() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="form-label">Nova senha</label>
+            <label htmlFor="new-password" className="form-label">Nova senha</label>
             <input
+              id="new-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
               required
               placeholder="••••••••"
-              minLength={6}
+              minLength={8}
+              autoComplete="new-password"
             />
+            <PasswordStrengthIndicator password={password} />
           </div>
 
           <div>
-            <label className="form-label">Confirme a nova senha</label>
+            <label htmlFor="confirm-password" className="form-label">Confirme a nova senha</label>
             <input
+              id="confirm-password"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="form-input"
               required
               placeholder="••••••••"
-              minLength={6}
+              minLength={8}
+              autoComplete="new-password"
             />
+            {confirmPassword && password !== confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">As senhas não coincidem.</p>
+            )}
           </div>
 
           <button
             type="submit"
-            disabled={loading || !token}
-            className="w-full btn-primary justify-center py-3 text-base"
+            disabled={loading || !token || !isPasswordValid || password !== confirmPassword}
+            className="w-full btn-primary justify-center py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Salvando...' : 'Salvar Nova Senha'}
           </button>
+
+          <div className="text-center mt-4">
+            <Link
+              href="/admin/login"
+              className="text-sm text-gray-500 hover:text-black font-medium transition-colors"
+            >
+              Voltar para o login
+            </Link>
+          </div>
         </form>
       </div>
     </div>

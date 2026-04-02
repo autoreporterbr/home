@@ -25,12 +25,13 @@ export default function LoginPage() {
       })
 
       if (res?.error) {
-        setError('Email ou senha inválidos.')
+        setError('Credenciais inválidas. Verifique seu e-mail e senha.')
       } else {
         router.push('/admin')
+        router.refresh()
       }
     } catch (err) {
-      setError('Ocorreu um erro ao fazer login.')
+      setError('Erro de conexão. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -54,28 +55,40 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="form-label">Email</label>
+            <label htmlFor="login-email" className="form-label">Email</label>
             <input
+              id="login-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
               required
               placeholder="seu@email.com.br"
+              autoComplete="email"
             />
           </div>
 
           <div>
-            <label className="form-label">Senha</label>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="login-password" className="form-label" style={{ marginBottom: 0 }}>Senha</label>
+              <Link
+                href="/admin/esqueci-senha"
+                className="text-xs text-yellow-500 hover:text-yellow-600 font-semibold transition-colors"
+              >
+                Esqueci minha senha
+              </Link>
+            </div>
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
               required
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 
@@ -84,17 +97,8 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full btn-primary justify-center py-3 text-base"
           >
-            {loading ? 'Carregando...' : 'Entrar no Painel'}
+            {loading ? 'Entrando...' : 'Entrar no Painel'}
           </button>
-
-          <div className="text-center mt-4">
-            <Link 
-              href="/admin/esqueci-senha" 
-              className="text-sm text-yellow-500 hover:text-yellow-400 font-medium"
-            >
-              Esqueci minha senha
-            </Link>
-          </div>
         </form>
 
         <p className="text-center mt-8 text-xs text-gray-400">
