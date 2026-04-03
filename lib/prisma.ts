@@ -5,14 +5,18 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 // Fallback para evitar erro de build na Vercel caso a variável ainda não tenha sido configurada no painel.
-const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/postgres";
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  console.error("❌ DATABASE_URL is not defined in environment variables!");
+}
 
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     datasources: {
       db: {
-        url: databaseUrl
+        url: databaseUrl || ""
       }
     },
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
