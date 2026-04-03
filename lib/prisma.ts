@@ -6,10 +6,10 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 // Fallback para evitar erro de build na Vercel caso a variável ainda não tenha sido configurada no painel.
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL_SUPABASE;
 
 if (!databaseUrl) {
-  console.error("❌ DATABASE_URL is not defined in environment variables!");
+  console.error("❌ DATABASE_URL_SUPABASE is not defined in environment variables!");
 }
 
 export const prisma =

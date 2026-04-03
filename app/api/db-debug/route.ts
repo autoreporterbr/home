@@ -17,7 +17,7 @@ export async function GET() {
       admin_email: adminUser?.email,
       admin_role: adminUser?.role,
       env_check: {
-        has_database_url: !!process.env.DATABASE_URL,
+        has_database_url: !!process.env.DATABASE_URL_SUPABASE,
         has_auth_secret: !!process.env.AUTH_SECRET,
         node_env: process.env.NODE_ENV
       }
@@ -27,7 +27,7 @@ export async function GET() {
       database_status: 'error',
       error: error.message || 'Unknown error',
       env_check: {
-        has_database_url: !!process.env.DATABASE_URL,
+        has_database_url: !!process.env.DATABASE_URL_SUPABASE,
       }
     }, { status: 500 })
   }
