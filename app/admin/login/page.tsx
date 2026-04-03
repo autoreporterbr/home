@@ -5,6 +5,8 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -102,7 +104,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center mt-8 text-xs text-gray-400">
-          Auto Repórter — Portal de Notícias Automotivas [v9.0-db-fix]
+          Auto Repórter — Portal de Notícias Automotivas [v11.1-final-cache-fix]
         </p>
       </div>
     </div>
