@@ -1,3 +1,4 @@
+// Prisma Client initialized - Force Redeploy v9.1
 import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
