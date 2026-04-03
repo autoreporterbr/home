@@ -14,12 +14,10 @@ export async function GET() {
       database_status: 'online',
       users_count: userCount,
       admin_found: !!adminUser,
-      admin_email: adminUser?.email,
-      admin_role: adminUser?.role,
+      admin_email_masked: adminUser ? adminUser.email.substring(0, 3) + '...' : 'none',
       env_check: {
-        has_database_url: !!process.env.DATABASE_URL_SUPABASE,
+        has_database_url_supabase: !!process.env.DATABASE_URL_SUPABASE,
         has_auth_secret: !!process.env.AUTH_SECRET,
-        node_env: process.env.NODE_ENV
       }
     })
   } catch (error: any) {
@@ -27,7 +25,7 @@ export async function GET() {
       database_status: 'error',
       error: error.message || 'Unknown error',
       env_check: {
-        has_database_url: !!process.env.DATABASE_URL_SUPABASE,
+        has_database_url_supabase: !!process.env.DATABASE_URL_SUPABASE,
       }
     }, { status: 500 })
   }
