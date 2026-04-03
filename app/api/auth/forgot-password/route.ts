@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
     const resetUrl = `${appUrl}/admin/redefinir-senha?token=${resetToken}`
 
-    await sendMail(
+    const emailResult = await sendMail(
       user.email,
       'Recuperação de Senha - Auto Repórter',
       `
@@ -95,6 +95,10 @@ export async function POST(request: Request) {
       </div>
       `
     )
+
+    if (!emailResult.success) {
+      console.error('Falha no envio do e-mail de recuperação:', emailResult.error)
+    }
 
     return genericResponse
   } catch (error) {

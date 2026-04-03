@@ -33,8 +33,8 @@ export async function sendMail(to: string, subject: string, html: string) {
     })
 
     return { success: true, mocked: false }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro ao enviar e-mail via SMTP:', error)
-    throw new Error('Falha ao enviar e-mail')
+    return { success: false, error: error.message || 'Erro desconhecido ao enviar e-mail' }
   }
 }
